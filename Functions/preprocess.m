@@ -7,7 +7,7 @@ p = readtable(fileName,'Sheet',sheetName,'Range','A1:D29','ReadRowNames',true);
 data = p(:,{'number','unit'});
 
 % convert "data" to class of type planets
-sys = planets(data);
+sys = model(data);
 
 end
 
