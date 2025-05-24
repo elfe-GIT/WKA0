@@ -4,10 +4,7 @@ classdef model
     
     properties
 
-        m_T
-        m_B
-        m_R
-        J_R
+        % system matrices
         MO
         MC
         MS
@@ -18,7 +15,7 @@ classdef model
         KO
         KC
         KS
-       
+        % Omega
         Oga
     end
     
@@ -29,9 +26,13 @@ classdef model
             SIunits = containers.Map;
             SIunits('1'      ) = 1;
             SIunits('mm'     ) = 1/1000;
+            SIunits('cm'     ) = 1/100;
+            SIunits('m'      ) = 1;
+            SIunits('m^2'    ) = 1;
             SIunits('kg'     ) = 1;
             SIunits('km/h'   ) = 1/3.6;
             SIunits('N'      ) = 1;
+            SIunits('N*m^2'  ) = 1;
             SIunits('N/m^2'  ) = 1;
             SIunits('kg*m^2' ) = 1;
             SIunits('kg/m^3' ) = 1;
@@ -39,49 +40,67 @@ classdef model
             SIunits('s'      ) = 1;
             SIunits('N*m/rad') = 1;
             SIunits('N/(m/s)' ) = 1;
+            SIunits('U/min'   ) = 1/60;
                      
             % ++++++++++++++++ read from database ++++++++++++++++++++++++
             m_B = data({'m[B]'},:).number*SIunits(data({'m[B]'},:).unit{1});
             
             % generic
-            E = data({'E'},:).number*SIunits(data({'E'},:).unit{1});
 
             % tower
             l_T = data({'l[T]'},:).number*SIunits(data({'l[T]'},:).unit{1});
+            E_T = data({'E[T]'},:).number*SIunits(data({'E[T]'},:).unit{1});
+            G_T = data({'G[T]'},:).number*SIunits(data({'G[T]'},:).unit{1});
             rho_T = data({'ρ[T]'},:).number*SIunits(data({'ρ[T]'},:).unit{1});
             D_T = data({'D[T]'},:).number*SIunits(data({'D[T]'},:).unit{1});
             t_T = data({'t[T]'},:).number*SIunits(data({'t[T]'},:).unit{1});
 
             % nacelle (rigid body)
             m_N = data({'m[N]'},:).number*SIunits(data({'m[N]'},:).unit{1});
-            J_N(1) = data({'J[N,1]'},:).number*SIunits(data({'J[N,1]'},:).unit{1});
-            J_N(2) = data({'J[N,2]'},:).number*SIunits(data({'J[N,2]'},:).unit{1});
-            J_N(3) = data({'J[N,3]'},:).number*SIunits(data({'J[N,3]'},:).unit{1});
+            J_N1 = data({'J[N,1]'},:).number*SIunits(data({'J[N,1]'},:).unit{1});
+            J_N2 = data({'J[N,2]'},:).number*SIunits(data({'J[N,2]'},:).unit{1});
+            J_N3 = data({'J[N,3]'},:).number*SIunits(data({'J[N,3]'},:).unit{1});
             b = data({'b'},:).number*SIunits(data({'b'},:).unit{1});
 
             % rotor-shaft
             c = data({'c'},:).number*SIunits(data({'c'},:).unit{1});
             D_S = data({'D[S]'},:).number*SIunits(data({'D[S]'},:).unit{1});
+            E_S = data({'E[S]'},:).number*SIunits(data({'E[S]'},:).unit{1});
 
             % rotor
             m_R = data({'m[R]'},:).number*SIunits(data({'m[R]'},:).unit{1});
             R = data({'R'},:).number*SIunits(data({'R'},:).unit{1});
-            EI_R = data({'EI[R]'},:).number*SIunits(data({'EI[R]'},:).unit{1});
-
+            J_R = data({'J[R]'},:).number*SIunits(data({'J[R]'},:).unit{1});
+      
             % blade
             l_B = data({'l[B]'},:).number*SIunits(data({'l[B]'},:).unit{1});
             m_B = data({'m[B]'},:).number*SIunits(data({'m[B]'},:).unit{1});
+            EI_B = data({'EI[B]'},:).number*SIunits(data({'EI[B]'},:).unit{1}); % calculated from eigenfreuquency
+            A_B = data({'A[B]'},:).number*SIunits(data({'A[B]'},:).unit{1});
+            E_B = data({'E[B]'},:).number*SIunits(data({'E[B]'},:).unit{1});
 
             % parameter study
-            obj.N(1) = data({'N[0]'},:).number*SIunits(data({'N[0]'},:).unit{1});
-            obj.N(2) = data({'N[1]'},:).number*SIunits(data({'N[1]'},:).unit{1});
-            obj.N(3) = data({'ΔN'},:).number*SIunits(data({'ΔN'},:).unit{1});
+            N(1) = data({'N[0]'},:).number*SIunits(data({'N[0]'},:).unit{1});
+            N(2) = data({'N[1]'},:).number*SIunits(data({'N[1]'},:).unit{1});
+            N(3) = data({'ΔN'},:).number*SIunits(data({'ΔN'},:).unit{1});
 
             % derived properties
 
+            obj.Oga = 2*pi()*linspace(N(1),N(2),ceil((N(2)-N(1))/N(3))+1);
+      
+            EI_T = E_T*pi()*(D_T/2)^3*t_T;
+            i_T  = rho_T * pi()*D_T*t_T * (D_T/2)^2;
+            GI_T = G_T* pi()* (D_S^4-(D_S-t_T)^4)/64;
+            EI_S = E_S*pi()* D_S^4/64;
+            %EI_B = ...
+            EA_B = E_B*A_B;
+            m_T = rho_T*2*pi()*(D_T/2)*t_T*l_B;
+                        
+            % ................................................
             
-
-
+            
+            
+            
             MO = zeros(14,14);
             MC = zeros(14,14);
             MS = zeros(14,14);
@@ -94,6 +113,8 @@ classdef model
             KO = zeros(14,14);
             KC = zeros(14,14);
             KS = zeros(14,14);
+
+            % start: from matrices.m
 
             MO( 1 , 1 ) =  m_T/5+m_N+(2*l_B^2*m_B)/l_T^2+(6*R*l_B*m_B)/l_T^2+(12*c^2*m_B)/l_T^2+(24*b*c*m_B)/l_T^2+(12*b^2*m_B)/l_T^2+(6*R^2*m_B)/l_T^2+3*m_B+(4*J_N2)/l_T^2 ; 
             MO( 1 , 6 ) =  m_B/3 ; 
@@ -331,20 +352,20 @@ classdef model
             GS( 9 , 3 ) =  -((sqrt(3)*l_B*m_B)/4)-(R*m_B)/sqrt(3) ; 
             GS( 12 , 1 ) =  (l_B*m_B)/(2*l_T)+(2*R*m_B)/(3*l_T) ; 
             GS( 12 , 3 ) =  (sqrt(3)*l_B*m_B)/4+(R*m_B)/sqrt(3) ; 
-            KK( 1 , 1 ) =  (4*EI)/l_T^3 ; 
-            KK( 2 , 2 ) =  (4*EI)/l_T^3 ; 
-            KK( 3 , 3 ) =  GI/l_T ; 
-            KK( 4 , 4 ) =  (4*EI)/c^3 ; 
-            KK( 5 , 5 ) =  (4*EI)/c^3 ; 
-            KK( 6 , 6 ) =  (4*EI)/l_B^3 ; 
-            KK( 7 , 7 ) =  (4*EI)/l_B^3 ; 
-            KK( 8 , 8 ) =  (4*EA)/(3*l_B) ; 
-            KK( 9 , 9 ) =  (4*EI)/l_B^3 ; 
-            KK( 10 , 10 ) =  (4*EI)/l_B^3 ; 
-            KK( 11 , 11 ) =  (4*EA)/(3*l_B) ; 
-            KK( 12 , 12 ) =  (4*EI)/l_B^3 ; 
-            KK( 13 , 13 ) =  (4*EI)/l_B^3 ; 
-            KK( 14 , 14 ) =  (4*EA)/(3*l_B) ; 
+            KK( 1 , 1 ) =  (4*EI_T)/l_T^3 ; 
+            KK( 2 , 2 ) =  (4*EI_T)/l_T^3 ; 
+            KK( 3 , 3 ) =  GI_T/l_T ; 
+            KK( 4 , 4 ) =  (4*EI_S)/c^3 ; 
+            KK( 5 , 5 ) =  (4*EI_S)/c^3 ; 
+            KK( 6 , 6 ) =  (4*EI_B)/l_B^3 ; 
+            KK( 7 , 7 ) =  (4*EI_B)/l_B^3 ; 
+            KK( 8 , 8 ) =  (4*EA_B)/(3*l_B) ; 
+            KK( 9 , 9 ) =  (4*EI_B)/l_B^3 ; 
+            KK( 10 , 10 ) =  (4*EI_B)/l_B^3 ; 
+            KK( 11 , 11 ) =  (4*EA_B)/(3*l_B) ; 
+            KK( 12 , 12 ) =  (4*EI_B)/l_B^3 ; 
+            KK( 13 , 13 ) =  (4*EI_B)/l_B^3 ; 
+            KK( 14 , 14 ) =  (4*EA_B)/(3*l_B) ; 
             K0( 1 , 1 ) =  -((2*l_B^2*m_B)/l_T^2)-(6*R*l_B*m_B)/l_T^2-(6*R^2*m_B)/l_T^2 ; 
             K0( 2 , 2 ) =  -((4*l_B^2*m_B)/l_T^2)-(12*R*l_B*m_B)/l_T^2-(12*R^2*m_B)/l_T^2 ; 
             K0( 2 , 7 ) =  -((l_B*m_B)/(2*l_T))-(2*R*m_B)/(3*l_T) ; 
@@ -433,6 +454,7 @@ classdef model
             KS( 12 , 1 ) =  -((sqrt(3)*l_B*m_B)/(4*l_T))-(R*m_B)/(sqrt(3)*l_T) ; 
             KS( 12 , 3 ) =  (l_B*m_B)/8+(R*m_B)/6 ; 
 
+            % end: from matrices.m
 
             obj.MO = MO;
             obj.MC = MC;
