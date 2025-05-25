@@ -18,6 +18,7 @@ classdef model
         % Omega
         Oga
         i
+        tEnd
     end
     
     methods

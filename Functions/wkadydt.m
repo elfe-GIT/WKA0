@@ -25,5 +25,7 @@ dydt(15:28,1) = -inv(M)*(G*P+K*Q);
 
 %% velocities
 dydt(1:14,1) = y(15:28,1);
+%%
+waitbar(t / sys.tEnd);
 
 end
