@@ -17,6 +17,15 @@ sheetName='Systemparameter';
 sys = preprocess(parameterFile,sheetName);
 
 %% solve IVP
+sys.i = 2;
+% set-up numerical paramters
+tEnd = 2*pi()/sys.Oga(sys.i);
+tspan = [0,tEnd];
+% initial values from sys structured for ODE45
+y0    = ones(28,1);
+y0(5,1)=1;
+%
+[t,y] = ode45(@(t,y)wkadydt(t,y,sys),tspan,y0);
 
 %% postprocess
 % define plotting range
