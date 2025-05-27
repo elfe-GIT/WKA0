@@ -455,6 +455,19 @@ classdef model
 
             % end: from matrices.m
 
+            for row = 1:14
+                MO(row,:) = MO(row,:)/MO(row,row);
+                MC(row,:) = MC(row,:)/MO(row,row);
+                MS(row,:) = MS(row,:)/MO(row,row);
+                GO(row,:) = GO(row,:)/MO(row,row);
+                GC(row,:) = GC(row,:)/MO(row,row);
+                GS(row,:) = GS(row,:)/MO(row,row);
+                KK(row,:) = KK(row,:)/MO(row,row);
+                KO(row,:) = KO(row,:)/MO(row,row);
+                KC(row,:) = KC(row,:)/MO(row,row);
+                KS(row,:) = KS(row,:)/MO(row,row);
+            end
+
             obj.MO = MO;
             obj.MC = MC;
             obj.MS = MS;
@@ -467,6 +480,10 @@ classdef model
             obj.KO = KO;
             obj.KC = KC;
             obj.KS = KS;
+
+            % pivotal coefficients of system matrices are too large -> normalize with MO(i,i)
+
+
 
         end
 

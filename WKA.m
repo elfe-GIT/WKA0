@@ -18,19 +18,19 @@ sys = preprocess(parameterFile,sheetName);
 
 %% solve IVP
 sys.i = 2;
-% set-up numerical paramters
+% set-upy numerical paramters
 sys.tEnd = 2*pi()/sys.Oga(sys.i);
 tspan = [0,sys.tEnd];
 % initial values from sys structured for ODE45
-y0    = ones(28,1);
+y0     = zeros(28,1);
 y0(5,1)=1;
 %
 h = waitbar(0,'solving ODE - please wait...');
-[t,y] = ode45(@(t,y)wkadydt(t,y,sys),tspan,y0);
+[t,y] = ode15s(@(t,y)wkadydt(t,y,sys),tspan,y0);
 close(h);
 %% postprocess
 % define plotting range
-postprocess(sys,t,y,range);
+%postprocess(sys,t,y,range);
 
 %% EOF
 
