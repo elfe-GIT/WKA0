@@ -20,6 +20,7 @@ sys = preprocess(parameterFile,sheetName);
 sys.i = 2;
 % set-upy numerical paramters
 sys.tEnd = 2*pi()/sys.Oga(sys.i);
+sys.tEnd = 1.
 tspan = [0,sys.tEnd];
 % initial values from sys structured for ODE45
 y0     = zeros(28,1);
@@ -30,7 +31,8 @@ h = waitbar(0,'solving ODE - please wait...');
 close(h);
 %% postprocess
 % define plotting range
-%postprocess(sys,t,y,range);
+range = [0.,1];
+postprocess(sys,t,y,range);
 
 %% EOF
 

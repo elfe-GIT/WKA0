@@ -11,9 +11,9 @@ function dydt = wkadydt(t,y,sys)
 %        K[K]                                 *Q   + 
 %  Ω^2* (K[O] + cos(Ω t)*K[C] + sin(Ω t)*K[S])*Q    = 0 
 
-P = y( 1:14,1);
-Q = y(15:28,1);
-disp(t);
+Q = y( 1:14,1);
+P = y(15:28,1);
+% disp(t);
 Oga = sys.Oga(sys.i);
 M =                 sys.MO + cos(Oga*t)*sys.MC + sin(Oga*t)*sys.MS;
 G =          Oga  *(sys.GO + cos(Oga*t)*sys.GC + sin(Oga*t)*sys.GS);
