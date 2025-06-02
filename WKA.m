@@ -17,22 +17,29 @@ sheetName='Systemparameter';
 sys = preprocess(parameterFile,sheetName);
 
 %% solve IVP
-sys.i = 2;
+sys.i = 5;
 % set-upy numerical paramters
-sys.tEnd = 2*pi()/sys.Oga(sys.i);
-sys.tEnd = 1.
+if sys.Oga(sys.i) == 0
+    sys.tEnd = 5;
+else
+    sys.tEnd = 2*pi()/sys.Oga(sys.i);
+end
+
 tspan = [0,sys.tEnd];
 % initial values from sys structured for ODE45
-y0     = zeros(28,1);
-y0(5,1)=1;
+y0      = zeros(28,1);
+y0( 1,1)= 1;
 %
 h = waitbar(0,'solving ODE - please wait...');
 [t,y] = ode15s(@(t,y)wkadydt(t,y,sys),tspan,y0);
 close(h);
 %% postprocess
 % define plotting range
-range = [0.,1];
+range = [0.,sys.tEnd];
 postprocess(sys,t,y,range);
 
 %% EOF
 
+%disp("**********************************************************")
+%dsip(" dydt: elimited cos/sin-Terms")
+%disp("**********************************************************")

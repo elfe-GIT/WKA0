@@ -89,7 +89,7 @@ classdef model
       
             EI_T = E_T*pi()*(D_T/2)^3*t_T;
             i_T  = rho_T * pi()*D_T*t_T * (D_T/2)^2;
-            GI_T = G_T* pi()* (D_S^4-(D_S-t_T)^4)/64;
+            GI_T = G_T* pi()* D_T^3*t_T/16;
             EI_S = E_S*pi()* D_S^4/64;
             %EI_B = ...
             EA_B = E_B*A_B;
@@ -169,7 +169,7 @@ classdef model
             MO( 13 , 2 ) =  (l_B*m_B)/(2*l_T)+(2*R*m_B)/(3*l_T) ; 
             MO( 13 , 4 ) =  -(m_B/6) ; 
             MO( 13 , 5 ) =  -(m_B/(2*sqrt(3))) ; 
-            MO( 13 , 13 ) =  m_B/5 ; 
+            MO( 13 , 13 ) =  m_B/5; 
             MO( 14 , 4 ) =  m_B/(2*sqrt(3)) ; 
             MO( 14 , 5 ) =  -(m_B/6) ; 
             MO( 14 , 14 ) =  m_B/5 ; 
@@ -455,18 +455,19 @@ classdef model
 
             % end: from matrices.m
 
-            for row = 1:14
-                MO(row,:) = MO(row,:)/MO(row,row);
-                MC(row,:) = MC(row,:)/MO(row,row);
-                MS(row,:) = MS(row,:)/MO(row,row);
-                GO(row,:) = GO(row,:)/MO(row,row);
-                GC(row,:) = GC(row,:)/MO(row,row);
-                GS(row,:) = GS(row,:)/MO(row,row);
-                KK(row,:) = KK(row,:)/MO(row,row);
-                KO(row,:) = KO(row,:)/MO(row,row);
-                KC(row,:) = KC(row,:)/MO(row,row);
-                KS(row,:) = KS(row,:)/MO(row,row);
-            end
+            % pivotal coefficients of system matrices are too large -> normalize with MO(i,i)
+            %for row = 1:14
+                %MO(row,:) = MO(row,:)/MO(row,row);
+                %MC(row,:) = MC(row,:)/MO(row,row);
+                %MS(row,:) = MS(row,:)/MO(row,row);
+                %GO(row,:) = GO(row,:)/MO(row,row);
+                %GC(row,:) = GC(row,:)/MO(row,row);
+                %GS(row,:) = GS(row,:)/MO(row,row);
+                %KK(row,:) = KK(row,:)/MO(row,row);
+                %O(row,:) = KO(row,:)/MO(row,row);
+                %KC(row,:) = KC(row,:)/MO(row,row);
+                %KS(row,:) = KS(row,:)/MO(row,row);
+            %end
 
             obj.MO = MO;
             obj.MC = MC;
@@ -480,10 +481,6 @@ classdef model
             obj.KO = KO;
             obj.KC = KC;
             obj.KS = KS;
-
-            % pivotal coefficients of system matrices are too large -> normalize with MO(i,i)
-
-
 
         end
 

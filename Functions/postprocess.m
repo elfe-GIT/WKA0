@@ -9,11 +9,14 @@ end
 
 % retrieve indeces of start/end-values
 % tower
-QT = y(:,15:17);
+QT = y(:, 1: 3);
+PT = y(:,15:17);
 % shaft
-QS = y(:,18:19);
+QS = y(:, 4: 5);
+PS = y(:,18:19);
 % blades
-QB = y(:,20:28);
+QB = y(:, 6:14);
+PB = y(:,20:28);
 
 r = [find(abs(t-range(1))==min(abs(t-range(1)))),...
      find(abs(t-range(2))==min(abs(t-range(2))))];
@@ -24,6 +27,9 @@ t  = t(r(1):r(2));
 QT = QT(r(1):r(2), :);
 QS = QS(r(1):r(2), :);
 QB = QB(r(1):r(2), :);
+PT = PT(r(1):r(2), :);
+PS = PS(r(1):r(2), :);
+PB = PB(r(1):r(2), :);
 
 %+++++++++++++++++++++++++++++++++++++++++++++++++
 subplot(2,2,1);
@@ -57,11 +63,11 @@ legend('u_{11}','u_{12}','u_{13}','u_{21}','u_{22}','u_{23}','u_{31}','u_{32}','
 subplot(2,2,4);
 %%
 % plot contact forces
-%plot(t,F);
-%title('contact forces')
-%xlabel('t/s ->');
-%ylabel('F_c/N ->');
-%legend('-B_x','-B_y','+|B|','+A_H');
+plot(QB(:,:),PB(:,:));
+title('phase portrait blades')
+xlabel('QB ->');
+ylabel('PB ->');
+legend('u_{11}','u_{12}','u_{13}','u_{21}','u_{22}','u_{23}','u_{31}','u_{32}','u_{33}');
 %ylim([-5 25])
 %set(gcf,'Color','white')
 end

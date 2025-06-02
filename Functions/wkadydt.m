@@ -19,12 +19,10 @@ M =                 sys.MO + cos(Oga*t)*sys.MC + sin(Oga*t)*sys.MS;
 G =          Oga  *(sys.GO + cos(Oga*t)*sys.GC + sin(Oga*t)*sys.GS);
 K = sys.KK + Oga^2*(sys.KO + cos(Oga*t)*sys.KC + sin(Oga*t)*sys.KS);
 
-%disp(size(M))
 
-dydt(15:28,1) = -linsolve(M,(G*P+K*Q));
-
-%% velocities
+%% derivatives
 dydt(1:14,1) = y(15:28,1);
+dydt(15:28,1) = linsolve(M,(-G*P-K*Q));
 %%
 waitbar(t / sys.tEnd);
 
