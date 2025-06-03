@@ -40,11 +40,19 @@ for caseID = 1:length(sys.Oga)
             % initial values from sys structured for ODE45
             [t,y] = solveIVP(sys,caseID,initID);   
             MDM(:,initID) = transpose(y(end,:));
+            fprintf('.');
         end
         C(:,caseID) = eig(MDM);
         disp(X);
     end
 end
-plot(sys.Oga,abs(C(:,:)));
+save(strcat("C-",string(datetime('now','Format','yyyy-MM-dd')),".mat"),"C");
+
+% and plot ....
+hold off;
+plot(sys.Oga,abs(C(:,:)),'*');
+title('characteristic multiplyers')
+xlabel('f/Hz ->');
+ylabel('ρ/1 ->');
 
 %% EOF
