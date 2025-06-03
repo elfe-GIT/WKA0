@@ -17,55 +17,34 @@ sheetName='Systemparameter';
 sys = preprocess(parameterFile,sheetName);
 
 %% solve IVP
-sys.i = 5;
-% set-upy numerical paramters
-if sys.Oga(sys.i) == 0
-    sys.tEnd = 5;
-else
-    sys.tEnd = 2*pi()/sys.Oga(sys.i);
-end
+caseID = 5; % select Omega-ID
+initID = 1; % if of state variable with initial deflection 
+[t,y] = solveIVP(sys,caseID,initID);
 
-tspan = [0,sys.tEnd];
-% initial values from sys structured for ODE45
-y0      = zeros(28,1);
-y0( 1,1)= 1;
-%
-h = waitbar(0,'solving ODE - please wait...');
-[t,y] = ode15s(@(t,y)wkadydt(t,y,sys),tspan,y0);
-close(h);
 %% postprocess
 % define plotting range
-range = [0.,sys.tEnd];
+range = [0.,t(end)];
 postprocess(sys,t,y,range);
 
 %% now: characteristic multiplyers
 
 % characteristic multiplyers
 C = zeros(28,length(sys.Oga));
-for i = 1:length(sys.Oga)
-    X = sprintf('finished %3.0f %%', i/length(sys.Oga)*100);
-    % select Omega
-    sys.i = i;
+for caseID = 1:length(sys.Oga)
     % set-upy numerical paramters
-    if sys.Oga(sys.i) ~= 0
-        sys.tEnd = 2*pi()/sys.Oga(sys.i);
-        tspan = [0,sys.tEnd];
+    if sys.Oga(caseID) ~= 0
+        X = sprintf('finished %3.0f %%', caseID/length(sys.Oga)*100);
         % monodromy matrix
         MDM = zeros(28,28);
-        for j=1:28
+        for initID=1:28
             % initial values from sys structured for ODE45
-            y0      = zeros(28,1);
-            y0( j,1)= 1;
-            %
-            h = waitbar(0,'solving ODE - please wait...');
-            [t,y] = ode15s(@(t,y)wkadydt(t,y,sys),tspan,y0);
-            close(h);
-            MDM(:,j) = transpose(y(end,:));
+            [t,y] = solveIVP(sys,caseID,initID);   
+            MDM(:,initID) = transpose(y(end,:));
         end
-        C(:,i) = eig(MDM);
+        C(:,caseID) = eig(MDM);
         disp(X);
     end
 end
-
+plot(sys.Oga,abs(C(:,:)));
 
 %% EOF
