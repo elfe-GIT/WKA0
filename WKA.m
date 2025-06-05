@@ -18,7 +18,7 @@ sys = preprocess(parameterFile,sheetName);
 
 %% solve IVP
 caseID = 5; % select Omega-ID
-initID = 1; % if of state variable with initial deflection 
+initID = 2; % if of state variable with initial deflection 
 [t,y] = solveIVP(sys,caseID,initID);
 
 %% postprocess
