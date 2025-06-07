@@ -39,7 +39,7 @@ subplot(2,2,1);
 plot(t,QT);
 title('tower');
 xlabel('t/s ->');
-ylabel('W,Θ ->');
+ylabel('W/m,Θ/rad ->');
 legend('W_1','W_2','Θ');
 
 subplot(2,2,2);
@@ -48,7 +48,7 @@ subplot(2,2,2);
 plot(t,QS);
 title('shaft')
 xlabel('t/s ->');
-ylabel('V ->');
+ylabel('V/m ->');
 legend('V_1','V_2');
 
 subplot(2,2,3);
@@ -57,7 +57,7 @@ subplot(2,2,3);
 plot(t,QB)
 title('blades')
 xlabel('t/s ->');
-ylabel('u ->');
+ylabel('u/m ->');
 legend('u_{11}','u_{12}','u_{13}','u_{21}','u_{22}','u_{23}','u_{31}','u_{32}','u_{33}');
 
 subplot(2,2,4);

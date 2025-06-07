@@ -18,7 +18,7 @@ sys = preprocess(parameterFile,sheetName);
 
 %% solve IVP
 caseID = 13; % select Omega-ID
-initID = 3; % if of state variable with initial deflection 
+initID = 11; % if of state variable with initial deflection 
 
 cID = caseID; % for setting the filename at save results
 iID = initID;
@@ -52,7 +52,6 @@ end
 
 save(strcat("C-",string(datetime('now','Format','yyyy-MM-dd')),".mat"),"C");
 
-% save results in folder "Results"
  outDir = 'Results';
 if ~exist(outDir, 'dir')
     mkdir(outDir);
